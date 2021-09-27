@@ -1,19 +1,30 @@
-var highScores = document.querySelector("#high-scores")
-var timer = document.querySelector("#timer")
+var highScores = document.querySelector("#highscores-header")
+var timerEl = document.querySelector("#timer")
 var mainContainer = document.querySelector(".main-container")
+var questionContainer = document.querySelector(".question-container")
+var resultContainer = document.querySelector("#result-container")
+var highScoreContainer = document.querySelector("#highscores-container")
 var introTitle = document.querySelector(".intro-title")
 var introQuestions = document.querySelector(".intro-question")
 var startButton = document.querySelector("#quiz-start")
-var questionContainer = document.querySelector(".question-container")
+var resultButton = document.querySelector("#result-button")
 var questions = document.querySelector(".questions")
+var result = document.querySelector("#result")
+var winner = document.querySelector("#winner")
+var initials = document.querySelector("#initials")
 var answers = document.querySelector(".answers")
-var answer1 = document.querySelector("#answer1")
-var answer2 = document.querySelector("#answer2")
-var answer3 = document.querySelector("#answer3")
-var answer4 = document.querySelector("#answer4")
-var answer5 = document.querySelector("#answer5")
+var choice1 = document.querySelector("#answer1")
+var choice2 = document.querySelector("#answer2")
+var choice3 = document.querySelector("#answer3")
+var choice4 = document.querySelector("#answer4")
+var choice5 = document.querySelector("#answer5")
 var response = document.querySelector("#response")
-var questionAsked
+var score = document.querySelector("#score")
+var currentQuestionProgression = 0
+var correct
+var secondsLeft = 100
+var win = false
+
 
 var questionArray = [
     {
@@ -22,16 +33,18 @@ var questionArray = [
         answer2: "Dynamic Brake",
         answer3: "Independent Brake",
         answer4: "Emergency Brake",
-        correctAnswer: "Dynamic Brake"
+        answer5: "All of the above",
+        correctAnswer: 2
     },
 
     {
         question: "Approximately how much does a loaded car weigh?",
-        answer1: "90-110 tons",
-        answer2: "130-150 tons",
-        answer3: "110-130 tons",
+        answer1: "90-109 tons",
+        answer2: "130-149 tons",
+        answer3: "110-129 tons",
         answer4: "None of the above",
-        correctAnswer: "130-150 tons"
+        answer5: "All of the above",
+        correctAnswer: 2
     },
 
     {
@@ -41,7 +54,7 @@ var questionArray = [
         answer3: "Emergency",
         answer4: "All of the above",
         answer5: "None of the above",
-        correctAnswer: "All of the above"
+        correctAnswer: 4
     },
 
     {
@@ -50,7 +63,8 @@ var questionArray = [
         answer2: "Diesel power",
         answer3: "Electric power",
         answer4: "Wish power",
-        correctAnswer: "Electric power"
+        answer5: "All of the above",
+        correctAnswer: 3
     },
 
     {
@@ -60,10 +74,115 @@ var questionArray = [
         answer3: "Hitting an immovable object",
         answer4: "All of the above",
         answer5: "None of the above",
-        correctAnswer: "All of the above"
+        correctAnswer: 4
     }
 ]
 
+var highScoresArray = []
+
+var lastQuestion = questionArray.length
+
+
+function startQuiz() {
+    mainContainer.setAttribute("style", "display: none;")
+    countDown()
+    cycleQuestions()
+}
+    
+function countDown() {
+    var timerInterval = setInterval(function() {
+        secondsLeft--
+        timerEl.textContent = "Time: " + secondsLeft
+        // console.log(secondsLeft)
+
+        if(secondsLeft <= 0) {
+            clearInterval(timerInterval)
+            isLoss()
+        }
+
+        if (win = true && secondsLeft > 0) {
+            clearInterval(timerInterval)
+            score.textContent = "Your score is: " + secondsLeft
+            
+        }
+    }, 1000)
+}
+
+function cycleQuestions() {
+    // mainContainer.setAttribute("style", "display: none;")
+    questionContainer.setAttribute("style", "display: block;")
+    if (currentQuestionProgression === lastQuestion) {
+        ifWin()
+    } else {
+    var currentQuestion = questionArray[currentQuestionProgression]
+    questions.textContent = currentQuestion.question
+    choice1.textContent = currentQuestion.answer1
+    choice2.textContent = currentQuestion.answer2
+    choice3.textContent = currentQuestion.answer3
+    choice4.textContent = currentQuestion.answer4
+    choice5.textContent = currentQuestion.answer5
+    }
+}
+
+function checkAnswer(answer) {
+    correct = questionArray[currentQuestionProgression].correctAnswer
+
+    if (answer === correct && currentQuestionProgression !== lastQuestion) {
+        response.setAttribute("style", "display: none;")
+        // response.textContent = ""
+        currentQuestionProgression++
+        cycleQuestions()
+    } else if (answer !== correct && currentQuestionProgression !== lastQuestion) {
+        response.setAttribute("style", "display: block;")
+        response.textContent = "Incorrect. Please try again"
+        //MINUS 10 SECONDS FROM TIMER
+        secondsLeft -= 10
+    } else {
+        ifWin()
+    }
+}
+
+function isLoss() {
+    mainContainer.setAttribute("style", "display: none;")
+    questionContainer.setAttribute("style", "display: hidden;")
+    resultContainer.setAttribute("style", "display: block;")
+    winner.setAttribute("style", "display: none;")
+    initials.setAttribute("style", "display: none;")
+    result.textContent = "Sorry. You failed to complete the quiz in time."
+    resultButton.textContent = "Try again"
+
+}
+
+function ifWin() {
+    mainContainer.setAttribute("style", "display: none;")
+    questionContainer.setAttribute("style", "display: hidden;")
+    resultContainer.setAttribute("style", "display: block;")
+    win = true
+    resultButton.textContent = "Submit"
+
+}
+
+function checkButton(event) {
+    event.preventDefault()
+
+    if (win = false) {
+        location.reload()
+    } else if (win = true && initials.value == "") {
+        alert("Initials field cannot be blank.\n Please enter your initials")
+    } else {
+        var storeScore = {
+            initials: initials.value.trim(),
+            score: secondsLeft,
+        }
+        var highScoresArray = JSON.parse(localStorage.getItem("saveHighScores"))
+        if (highScoresArray !== null) {
+            highScoresArray.push(storeScore)
+            localStorage.setItem("saveHighScores", JSON.stringify(highScoresArray))
+        }
+    }
+
+    highScores()
+}
 
 
 // answers.setAttribute("style", "visibility: hidden;")
@@ -71,122 +190,24 @@ var questionArray = [
 console.log(questionArray)
 
 
-function quizQuestion0() {
-    mainContainer.setAttribute("style", "visibility: hidden; ")
-    questionContainer.setAttribute("style", "display: block;")    
-    questions.textContent = questionArray[0].question
-    answer1.textContent = questionArray[0].answer1
-    answer2.textContent = questionArray[0].answer2
-    answer3.textContent = questionArray[0].answer3
-    answer4.textContent = questionArray[0].answer4
-    answer5.setAttribute("style", "display: none;")
+function highScores() {
+    mainContainer.setAttribute("style", "display: none;")
+    questionContainer.setAttribute("style", "display: none;")
+    resultContainer.setAttribute("style", "display: none;")
+    highScoreContainer.setAttribute("style", "display: block")
+    var scoresToShow = JSON.parse(localStorage.getItem("saveHighScores"))
 
-    // answers.addEventListener("click", function answer0() {
-        if (textContent.value !== questionArray[0].correctAnswer) {
-            response.textContent = "Incorrect. Please try again."
-            //MINUS 10 SECONDS FROM TIMER FUNCTION
-        } else {
-            // response.textContent = "Correct!!!"
-            quizQuestion1()
-        }
-    }
-    // )}
+    // function eachScore(item) {
+    //     for (let i = 0; i < item.scoresToShow.length; i++) {
+    //     var eachScore = scoresToShow[i];
 
-
-
-function quizQuestion1() {    
-    questions.textContent = questionArray[1].question
-    answer1.textContent = questionArray[1].answer1
-    answer2.textContent = questionArray[1].answer2
-    answer3.textContent = questionArray[1].answer3
-    answer4.textContent = questionArray[1].answer4
-    answer5.setAttribute("style", "display: none;")
-
-    answers.addEventListener("click", function answer1() {
-        if (!answer4) {
-            response.textContent = "Incorrect. Please try again."
-            //MINUS 10 SECONDS FROM TIMER FUNCTION
-        } else {
-            // response.textContent = "Correct!!!"
-            quizQuestion2()
-        }
-    })
+    //     eachScore = document.createElement("li")
+    //     document.querySelector("#highscores-list").appendChild(eachScore)
+        
+    //    }
+    // }
 }
 
-function quizQuestion2() {
-    // mainContainer.setAttribute("style", "visibility: hidden; ")
-    
-    questions.textContent = questionArray[2].question
-    answer1.textContent = questionArray[2].answer1
-    answer2.textContent = questionArray[2].answer2
-    answer3.textContent = questionArray[2].answer3
-    answer4.textContent = questionArray[2].answer4
-    answer5.textContent = questionArray[2].answer5
 
-    answers.addEventListener("click", function answer2() {
-        if (!answer4) {
-            response.textContent = "Incorrect. Please try again."
-            //MINUS 10 SECONDS FROM TIMER FUNCTION
-        } else {
-            // response.textContent = "Correct!!!"
-            quizQuestion3()
-        }
-    })
-}
 
-function quizQuestion3() {
-    // mainContainer.setAttribute("style", "display: none; ")
-    // questionContainer.setAttribute("style", "display: block;")
-    questions.textContent = questionArray[3].question
-    answer1.textContent = questionArray[3].answer1
-    answer2.textContent = questionArray[3].answer2
-    answer3.textContent = questionArray[3].answer3
-    answer4.textContent = questionArray[3].answer4
-    answer5.setAttribute("style", "display: none;")
-
-    answers.addEventListener("click", function answer3() {
-        if (!answer3) {
-            response.textContent = "Incorrect. Please try again."
-            //MINUS 10 SECONDS FROM TIMER FUNCTION
-        } else {
-            // response.textContent = "Correct!!!"
-            quizQuestion4()
-        }
-    })
-}
-
-function quizQuestion4() {
-    // mainContainer.setAttribute("style", "display: none; ")
-    
-    questions.textContent = questionArray[4].question
-    answer1.textContent = questionArray[4].answer1
-    answer2.textContent = questionArray[4].answer2
-    answer3.textContent = questionArray[4].answer3
-    // answer3.setAttribute("style", "")
-    answer4.textContent = questionArray[4].answer4
-    answer5.textContent = questionArray[4].answer5
-    answers.addEventListener("click", function answer4() {
-        if (!answer4) {
-            response.textContent = "Incorrect. Please try again."
-            //MINUS 10 SECONDS FROM TIMER FUNCTION
-        } else {
-            // response.textContent = "Correct!!!"
-            allDone()
-        }
-    })
-}
-
-function allDone() {
-    // mainContainer.setAttribute("style", "display: none")
-    
-    localStorage.setItem("score", score)
-}
-
-// function progressQuestion () {
-// for (let i = 0; i < 5; i++)
-//     questionAsked = questionArray[0].answer1[i];
-    
-//     console.log(questionAsked)
-// }
-
-startButton.addEventListener("click", quizQuestion0)
+startButton.addEventListener("click", startQuiz)

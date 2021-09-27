@@ -10,8 +10,12 @@
 </head>
 <body>
     <header>
-        <h3 id= "high-scores">View High Scores</h3>
-        <h3 id="timer"> Time: 100</h3>
+        <h3 id="highscores-header">
+            <button id="highscore-button" onclick="highScores()">View High Scores</button>
+        </h3>
+        <h3> 
+            <span id="timer">Time: 100</span>
+        </h3>
     </header>
 
     <main>
@@ -24,20 +28,28 @@
         <section class="question-container">
             <h1 class="questions"></h1>
             <div class="answers">
-                <button id="answer1"></button>
-                <button id="answer2"></button>
-                <button id="answer3"></button>
-                <button id="answer4"></button>
-                <button id="answer5"></button>
+                <button id="answer1" onclick="checkAnswer(1)"></button>
+                <button id="answer2" onclick="checkAnswer(2)"></button>
+                <button id="answer3" onclick="checkAnswer(3)"></button>
+                <button id="answer4" onclick="checkAnswer(4)"></button>
+                <button id="answer5" onclick="checkAnswer(5)"></button>
 
                 <p id="response"></p>
             </div>
         </section>
 
-        <section id="win-section">
-            <h1 id="congrats">Congratulations, you're done</h1>
-            <p></p>
-            <input type="text" name="initials" id="initials">
+        <section id="result-container">
+            <h1 id="result">Congratulations, you've completed the quiz.</h1>
+            <p id="score"></p>
+            <label id="winner">Please enter your initials</label>
+            <input type="text" name="initials" id="initials" placeholder="Please enter your initials">
+            <button id="result-button" onclick="checkButton()">Submit</button>
+
+        </section>
+
+        <section id="highscores-container">
+            <h1 id="highscores-title">High Scores</h1>
+            <ol id="highscores-list"></ol>
 
         </section>
 
