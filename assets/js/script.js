@@ -34,7 +34,6 @@ var questionArray = [
         answer5: "All of the above",
         correctAnswer: 2
     },
-
     {
         question: "Approximately how much does a loaded car weigh?",
         answer1: "90-109 tons",
@@ -44,7 +43,6 @@ var questionArray = [
         answer5: "All of the above",
         correctAnswer: 2
     },
-
     {
         question: "What is the best way to keep a car secure from rolling?",
         answer1: "Hand brake",
@@ -54,7 +52,6 @@ var questionArray = [
         answer5: "None of the above",
         correctAnswer: 4
     },
-
     {
         question: "How does a train move?",
         answer1: "Hope power",
@@ -64,7 +61,6 @@ var questionArray = [
         answer5: "All of the above",
         correctAnswer: 3
     },
-
     {
         question: "What ticket can you get for hitting a train with your car?",
         answer1: "Trespassing",
@@ -119,15 +115,13 @@ function countDown() {
     var timerInterval = setInterval(function() {
         secondsLeft--
         timerEl.textContent = "Time: " + secondsLeft
-        // console.log(secondsLeft)
 
         if(secondsLeft <= 0) {
             clearInterval(timerInterval)
             isLoss()
-        } else if (!win && secondsLeft > 0) {
-            // clearInterval(timerInterval)
-            score.textContent = "Your score is: " + secondsLeft
-            
+        } else if (win === true && secondsLeft > 0) {
+            score.textContent = "Your score is: " + secondsLeft            
+            clearInterval(timerInterval)
         }
     }, 1000)
 }
@@ -176,7 +170,6 @@ function isLoss() {
     initials.setAttribute("style", "display: none;")
     result.textContent = "Sorry. You failed to complete the quiz in time."
     resultButton.textContent = "Try again"
-
 }
 
 //Winning reponse, should be influencing timer
@@ -184,8 +177,9 @@ function ifWin() {
     mainContainer.setAttribute("style", "display: none;")
     questionContainer.setAttribute("style", "display: none;")
     resultContainer.setAttribute("style", "display: block;")
-    win = !win
     resultButton.textContent = "Submit"
+    win = true
+    
 }
 
 //Does 2 things, reloads the page if button pushed after loss or saves info for high scores area on win
@@ -204,17 +198,14 @@ function checkButton() {
     console.log(highScoresArray)
     if (highScoresArray == null) {
         highScoresArray = storeScore
-        localStorage.setItem("saveHighScores", JSON.stringify([highScoresArray]))
-        
+        localStorage.setItem("saveHighScores", JSON.stringify([highScoresArray]))        
     } else 
     if (highScoresArray !== null) {
         highScoresArray.push(storeScore)
         localStorage.setItem("saveHighScores", JSON.stringify(highScoresArray))
     }
-        
     processScore()
 }
-
 
 //Add event listeners
 startButton.addEventListener("click", startQuiz)
