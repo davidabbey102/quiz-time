@@ -1,3 +1,4 @@
+/* general portions of page control and their subsequent classes */
 * {
     margin: 0;
 }
@@ -20,9 +21,8 @@ header h3 {
     margin: 15px 15px 0 0;
 }
 
+/* body of page classes, tried to keep it in order based on progression of the quiz */
 main {
-    /* justify-content: center; */
-    /* text-align: center; */
     background-color: bisque;
 }
 
@@ -67,13 +67,12 @@ button:hover {
     color: white;
 }
 
+/* question container classes */
 .question-container {
     display: none;
-    /* justify-content: center; */
     width: 75%;
     margin: auto;
     height: 700px;
-    /* visibility: hidden; */
 }
 
 .questions {
@@ -83,23 +82,41 @@ button:hover {
 .answers {
     font-size: 28px;
     width: 100%;
-    /* font-size:; */
 }
 
+/* ID's settings, still mostly in order of appearance */
+/* wrong answer response in question container */
+#response {
+    display: none;
+    border-top: 4px solid darkgrey;
+    /* width: 75%; */
+    margin-top: 25px;
+    padding-top: 15px;
+}
+
+/* result container */
 #result-container {
     display: none;
-    /* background-color: white; */
     justify-content: center;
-    /* display: none; */
     width: 75%;
     margin: auto;
     height: 700px;
     text-align: center;
 }
 
+#result {
+    /* margin-top: 25px; */
+    padding: 40px 0;
+    font-size: 52px;
+}
+
+#initials {
+    display: inline;
+}
+
+/* high scores settings */
 #highscores-container {
     display: none;
-    background-color: white;
     justify-content: center;
     width: 75%;
     margin: auto;
@@ -134,45 +151,35 @@ button:hover {
     font-weight: bold;
 }
 
-#result {
-    /* margin-top: 25px; */
-    padding: 40px 0;
-    font-size: 52px;
+#play-again {
+    margin-top: -700px;
 }
 
-#initials {
-    display: inline;
+#clear-local {
+    background-color: coral;
+    margin-top: -50px;
+    margin-left: 950px;
 }
 
+#clear-local:hover {
+    background-color: red;
+}
+
+
+/* Header's ID's */
 #highscore-button {
     margin: 0;
     background-color: lightgray;
     width: 150px;
     height: 30px;
     font-size: 16px;
+    margin: 15px 0 0 15px;
 }
 
 #highscore-button:hover {
     background-color: black;
     color: white;
 }
-
-#response {
-    display: none;
-    border-top: 4px solid darkgrey;
-    /* width: 75%; */
-    margin-top: 25px;
-    padding-top: 15px;
-}
-
-#highscores-header {
-    margin-left: 15px;
-    margin-top: 15px;
-    /* background-color: white; */
-    width: fit-content;
-}
-
-
 
 #timer {
     margin-right: 15px;

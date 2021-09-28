@@ -114,3 +114,6 @@ localStorage.setItem("count", count);
 //         }
 //     })
 // }
+
+
+// var answers = document.querySelector(".answers")

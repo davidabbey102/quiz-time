@@ -4,15 +4,13 @@ var mainContainer = document.querySelector(".main-container")
 var questionContainer = document.querySelector(".question-container")
 var resultContainer = document.querySelector("#result-container")
 var highScoreContainer = document.querySelector("#highscores-container")
-var introTitle = document.querySelector(".intro-title")
-var introQuestions = document.querySelector(".intro-question")
 var startButton = document.querySelector("#quiz-start")
 var resultButton = document.querySelector("#result-button")
+var highButton = document.querySelector("#highscore-button")
 var questions = document.querySelector(".questions")
 var result = document.querySelector("#result")
 var winner = document.querySelector("#winner")
 var initials = document.querySelector("#initials")
-var answers = document.querySelector(".answers")
 var choice1 = document.querySelector("#answer1")
 var choice2 = document.querySelector("#answer2")
 var choice3 = document.querySelector("#answer3")
@@ -20,11 +18,11 @@ var choice4 = document.querySelector("#answer4")
 var choice5 = document.querySelector("#answer5")
 var response = document.querySelector("#response")
 var score = document.querySelector("#score")
+var highScoresList = document.querySelector("#highscores-list")
 var currentQuestionProgression = 0
 var correct
 var secondsLeft = 100
 var win = false
-
 
 var questionArray = [
     {
@@ -77,12 +75,41 @@ var questionArray = [
         correctAnswer: 4
     }
 ]
-
-var highScoresArray = []
-
 var lastQuestion = questionArray.length
 
+//Play again button on high scores page
+function playAgain() {
+    location.reload()
+}
 
+//Clear local storage and reload page
+function clearLocal() {
+    localStorage.clear()
+    location.reload()
+}
+
+//Populate the high score area
+function processScore() {
+    mainContainer.setAttribute("style", "display: none;")
+    questionContainer.setAttribute("style", "display: none;")
+    resultContainer.setAttribute("style", "display: none;")
+    highScoreContainer.setAttribute("style", "display: block;")
+    var scoresToShow = JSON.parse(localStorage.getItem("saveHighScores"))
+    console.log(scoresToShow)
+    highButton.disabled = true
+
+    for (var i = 0; i < scoresToShow.length; i++) {
+        var li = document.createElement("li")
+        var eachScore = scoresToShow[i]
+        console.log(eachScore)
+        var upperInitials = eachScore.initials.toUpperCase()
+
+        li.textContent = upperInitials + " with a score of " + eachScore.score
+        highScoresList.appendChild(li)
+    }      
+}
+
+//Hide intro & start button, display first question and start timer  
 function startQuiz() {
     mainContainer.setAttribute("style", "display: none;")
     countDown()
@@ -98,16 +125,15 @@ function countDown() {
         if(secondsLeft <= 0) {
             clearInterval(timerInterval)
             isLoss()
-        }
-
-        if (win = true && secondsLeft > 0) {
-            clearInterval(timerInterval)
+        } else if (!win && secondsLeft > 0) {
+            // clearInterval(timerInterval)
             score.textContent = "Your score is: " + secondsLeft
             
         }
     }, 1000)
 }
 
+//Progress questions
 function cycleQuestions() {
     // mainContainer.setAttribute("style", "display: none;")
     questionContainer.setAttribute("style", "display: block;")
@@ -124,12 +150,12 @@ function cycleQuestions() {
     }
 }
 
+//Check answer via onclick functions in html
 function checkAnswer(answer) {
     correct = questionArray[currentQuestionProgression].correctAnswer
 
     if (answer === correct && currentQuestionProgression !== lastQuestion) {
         response.setAttribute("style", "display: none;")
-        // response.textContent = ""
         currentQuestionProgression++
         cycleQuestions()
     } else if (answer !== correct && currentQuestionProgression !== lastQuestion) {
@@ -142,9 +168,10 @@ function checkAnswer(answer) {
     }
 }
 
+//If player loses
 function isLoss() {
     mainContainer.setAttribute("style", "display: none;")
-    questionContainer.setAttribute("style", "display: hidden;")
+    questionContainer.setAttribute("style", "display: none;")
     resultContainer.setAttribute("style", "display: block;")
     winner.setAttribute("style", "display: none;")
     initials.setAttribute("style", "display: none;")
@@ -153,61 +180,43 @@ function isLoss() {
 
 }
 
+//Winning reponse, should be influencing timer
 function ifWin() {
     mainContainer.setAttribute("style", "display: none;")
-    questionContainer.setAttribute("style", "display: hidden;")
+    questionContainer.setAttribute("style", "display: none;")
     resultContainer.setAttribute("style", "display: block;")
-    win = true
+    win = !win
     resultButton.textContent = "Submit"
-
 }
 
-function checkButton(event) {
-    event.preventDefault()
-
-    if (win = false) {
+//Does 2 things, reloads the page if button pushed after loss or saves info for high scores area on win
+function checkButton() {
+    if (secondsLeft <= 0) {
         location.reload()
-    } else if (win = true && initials.value == "") {
+    } else if (win = !win && initials.value == "") {
         alert("Initials field cannot be blank.\n Please enter your initials")
     } else {
         var storeScore = {
             initials: initials.value.trim(),
             score: secondsLeft,
         }
-        var highScoresArray = JSON.parse(localStorage.getItem("saveHighScores"))
-        if (highScoresArray !== null) {
-            highScoresArray.push(storeScore)
-            localStorage.setItem("saveHighScores", JSON.stringify(highScoresArray))
-        }
     }
-
-    highScores()
-}
-
-
-// answers.setAttribute("style", "visibility: hidden;")
-
-console.log(questionArray)
-
-
-function highScores() {
-    mainContainer.setAttribute("style", "display: none;")
-    questionContainer.setAttribute("style", "display: none;")
-    resultContainer.setAttribute("style", "display: none;")
-    highScoreContainer.setAttribute("style", "display: block")
-    var scoresToShow = JSON.parse(localStorage.getItem("saveHighScores"))
-
-    // function eachScore(item) {
-    //     for (let i = 0; i < item.scoresToShow.length; i++) {
-    //     var eachScore = scoresToShow[i];
-
-    //     eachScore = document.createElement("li")
-    //     document.querySelector("#highscores-list").appendChild(eachScore)
+    highScoresArray = JSON.parse(localStorage.getItem("saveHighScores"))
+    console.log(highScoresArray)
+    if (highScoresArray == null) {
+        highScoresArray = storeScore
+        localStorage.setItem("saveHighScores", JSON.stringify([highScoresArray]))
         
-    //    }
-    // }
+    } else 
+    if (highScoresArray !== null) {
+        highScoresArray.push(storeScore)
+        localStorage.setItem("saveHighScores", JSON.stringify(highScoresArray))
+    }
+        
+    processScore()
 }
 
 
-
+//Add event listeners
 startButton.addEventListener("click", startQuiz)
+highButton.addEventListener('click', highScores)

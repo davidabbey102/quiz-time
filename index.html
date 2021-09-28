@@ -10,9 +10,7 @@
 </head>
 <body>
     <header>
-        <h3 id="highscores-header">
-            <button id="highscore-button" onclick="highScores()">View High Scores</button>
-        </h3>
+            <button id="highscore-button" onclick="processScore()">View High Scores</button>
         <h3> 
             <span id="timer">Time: 100</span>
         </h3>
@@ -49,26 +47,13 @@
 
         <section id="highscores-container">
             <h1 id="highscores-title">High Scores</h1>
-            <ol id="highscores-list"></ol>
+            <ul id="highscores-list"></ul>
+
+            <button id="play-again" onclick="playAgain()">Play Again</button>
+            <button id="clear-local" onclick="clearLocal()">Clear High Scores</button>
 
         </section>
-
-
-
-
-
-
-
-
     </main>
-
-
-    
-
-
-
-
-
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
