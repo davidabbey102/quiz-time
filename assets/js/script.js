@@ -103,7 +103,6 @@ function processScore() {
         var eachScore = scoresToShow[i]
         console.log(eachScore)
         var upperInitials = eachScore.initials.toUpperCase()
-
         li.textContent = upperInitials + " with a score of " + eachScore.score
         highScoresList.appendChild(li)
     }      
